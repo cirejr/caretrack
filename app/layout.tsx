@@ -4,12 +4,14 @@ import "./globals.css";
 
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/global/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
-const fontSans = Plus_Jakarta_Sans({ subsets: ["latin"],
-	weight: ["300", "400", "500", "600", "700"],
-	style: ["normal", "italic"],
-	variable: "--font-sans",
- });
+const fontSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "CareTrack",
@@ -22,15 +24,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={cn('min-h-screen bg-dark-300 font-sans antialiased', fontSans.variable)}>
-				<ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-          >
-            {children}
-          </ThemeProvider>
-			</body>
+    <html lang='en'>
+      <body
+        className={cn(
+          "min-h-screen bg-dark-300 font-sans antialiased",
+          fontSans.variable,
+        )}
+      >
+        <ThemeProvider attribute='class' defaultTheme='dark'>
+          {children}
+        </ThemeProvider>
+        <Toaster closeButton richColors position='top-right' />
+      </body>
     </html>
   );
 }

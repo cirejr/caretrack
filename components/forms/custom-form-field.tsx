@@ -5,6 +5,9 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/
 import { Input } from '../ui/input';
 import { Control } from 'react-hook-form';
 import { FormFieldType } from './patient-form';
+import Image from 'next/image';
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 
 interface CustomProps {
   control: Control<any>,
@@ -22,7 +25,37 @@ interface CustomProps {
 }
 
 function RenderField({field, props}:{field: any, props: CustomProps} ) {
-	return <Input type='text' placeholder="John Doe" />
+	const {control, fieldType, name, label, placeholder, iconSrc, iconAlt} = props;
+	switch (fieldType) {
+		case FormFieldType.INPUT: 
+			return (
+				<div className='flex rounded-md border border-dark-500 bg-dark-400'>
+					{ iconSrc && (<Image src={iconSrc} alt={iconAlt as string || 'icon'} width={24} height={24} className='ml-2' />) }
+					<FormControl>
+						<Input  
+							placeholder={placeholder}
+							{...field}
+							className='shad-input border-0' 
+						/>
+					</FormControl>
+				</div>
+			)
+			case FormFieldType.PHONE_INPUT:
+				return (
+					<FormControl>
+						<PhoneInput 
+							defaultCountry='SN'
+							international
+							withCountryCallingCode
+							value={field.value}
+							onChange={field.onChange}
+							className='input-phone'
+						/>
+					</FormControl>
+				)
+				default:
+			break;
+}
 }
 
 export default function CustomFormField(props: CustomProps) {
@@ -38,7 +71,7 @@ export default function CustomFormField(props: CustomProps) {
 					)}
 
 					<RenderField field={field} props={props} />
-					
+
 					<FormMessage className='shad-error' />
         </FormItem>
       )}
