@@ -22,3 +22,12 @@ export async function createUser(user: CreateUserParams) {
     }
   }
 }
+
+export async function getUser(userId: string) {
+  try {
+    const user = await users.get(userId);
+    return parseStringify(user);
+  } catch (error: any) {
+    return error?.message;
+  }
+}
