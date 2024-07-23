@@ -6,7 +6,7 @@ export const PatientFormDefaultValues = {
   email: "",
   phone: "",
   birthDate: new Date(Date.now()),
-  gender: "Male" as Gender,
+  gender: "male" as Gender,
   address: "",
   occupation: "",
   emergencyContactName: "",
@@ -77,6 +77,28 @@ export const Doctors = [
     image: "/assets/images/dr-sharma.png",
     name: "Hardik Sharma",
   },
+];
+
+export const Specialties = [
+  { name: "Cardiology", value: "cardiology" },
+  { name: "Dermatology", value: "dermatology" },
+  { name: "Endocrinology", value: "endocrinology" },
+  { name: "Gastroenterology", value: "gastroenterology" },
+  { name: "Hematology", value: "hematology" },
+  { name: "Immunology", value: "immunology" },
+  { name: "Nephrology", value: "nephrology" },
+  { name: "Neurology", value: "neurology" },
+  { name: "Oncology", value: "oncology" },
+  { name: "Ophthalmology", value: "ophthalmology" },
+  { name: "Orthopedics", value: "orthopedics" },
+  { name: "Otolaryngology", value: "otolaryngology" },
+  { name: "Pediatrics", value: "pediatrics" },
+  { name: "Psychiatry", value: "psychiatry" },
+  { name: "Pulmonology", value: "pulmonology" },
+  { name: "Radiology", value: "radiology" },
+  { name: "Rheumatology", value: "rheumatology" },
+  { name: "Surgery", value: "surgery" },
+  { name: "Urology", value: "urology" },
 ];
 
 export const StatusIcon = {

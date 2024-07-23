@@ -7,14 +7,18 @@ import { z } from "zod";
 import { Form, FormControl, FormItem } from "@/components/ui/form";
 import CustomFormField from "./custom-form-field";
 import SubmitButton from "./submit-button";
-import { userFormValidation } from "@/lib/validations";
+import { patientFormValidation } from "@/lib/validations";
 import { useRouter } from "next/navigation";
-import { createUser } from "@/lib/actions/patient";
+import { createUser, registerPatient } from "@/lib/actions/patient";
 import { toast } from "sonner";
 import { FormFieldType } from "./patient-form";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
-import { Doctors, IdentificationTypes } from "@/constants";
+import {
+  Doctors,
+  IdentificationTypes,
+  PatientFormDefaultValues,
+} from "@/constants";
 import { SelectItem } from "../ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
@@ -23,29 +27,45 @@ import FileUploader from "./file-uploader";
 export default function RegisterForm({ user }: { user: User }) {
   const [isLoading, setIsLoading] = React.useState(false);
   const router = useRouter();
-  const form = useForm<z.infer<typeof userFormValidation>>({
-    resolver: zodResolver(userFormValidation),
+  const form = useForm<z.infer<typeof patientFormValidation>>({
+    resolver: zodResolver(patientFormValidation),
     defaultValues: {
+      ...PatientFormDefaultValues,
       name: "",
       email: "",
       phone: "",
     },
   });
 
-  async function onSubmit({
-    name,
-    email,
-    phone,
-  }: z.infer<typeof userFormValidation>) {
+  async function onSubmit(values: z.infer<typeof patientFormValidation>) {
     setIsLoading(true);
+    let formData;
+    if (
+      values.identificationDocument &&
+      values.identificationDocument.length > 0
+    ) {
+      const blobFile = new Blob([values.identificationDocument[0]], {
+        type: values.identificationDocument[0].type,
+      });
+
+      formData = new FormData();
+      formData.append("blobFile", blobFile);
+      formData.append("fileName", values.identificationDocument[0].name);
+    }
     try {
-      const userData = {
-        name,
-        email,
-        phone,
+      const patientData = {
+        ...values,
+        userId: user.$id,
+        identificationDocument: formData,
       };
-      const user = await createUser(userData);
-      if (user) router.push(`/patients/${user.$id}/register`);
+      //@ts-ignore
+      const res = await registerPatient(patientData);
+      if (res.status === 201) {
+        toast.success("Patient created successfully");
+        router.push(`/patients/${user.$id}/new-appointment`);
+      } else {
+        toast.error(res.error);
+      }
     } catch (error: any) {
       toast.error(error?.message || "Something went wrong");
     }
@@ -296,6 +316,33 @@ export default function RegisterForm({ user }: { user: User }) {
               <FileUploader files={field.value} onChange={field.onChange} />
             </FormControl>
           )}
+        />
+
+        <section className='space-y-6'>
+          <div className='mb-9 space-y-1'>
+            <h2 className='sub-heading'>Consent and Privacy</h2>
+          </div>
+        </section>
+
+        <CustomFormField
+          fieldType={FormFieldType.CHECKBOX}
+          control={form.control}
+          name='treatmentConsent'
+          label='I consent to treatment'
+        />
+
+        <CustomFormField
+          fieldType={FormFieldType.CHECKBOX}
+          control={form.control}
+          name='disclosureConsent'
+          label='I consent to disclosure information'
+        />
+
+        <CustomFormField
+          fieldType={FormFieldType.CHECKBOX}
+          control={form.control}
+          name='privacyConsent'
+          label='I consent to privacy information'
         />
 
         <div className='flex flex-col gap-6 xl:flex-row'></div>

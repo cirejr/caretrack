@@ -25,6 +25,8 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
+import { Checkbox } from "../ui/checkbox";
+import { Label } from "@radix-ui/react-label";
 
 interface CustomProps {
   control: Control<any>;
@@ -139,6 +141,24 @@ function RenderField({ field, props }: { field: any; props: CustomProps }) {
             className='shad-textArea'
             disabled={props.disabled}
           />
+        </FormControl>
+      );
+    case FormFieldType.CHECKBOX:
+      return (
+        <FormControl>
+          <div className='flex items-center gap-4'>
+            <Checkbox
+              id={props.name}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
+            <Label
+              htmlFor={props.name}
+              className='cursor-pointer checkbox-label'
+            >
+              {props.label}
+            </Label>
+          </div>
         </FormControl>
       );
     default:
