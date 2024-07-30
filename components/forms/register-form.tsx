@@ -9,7 +9,7 @@ import CustomFormField from "./custom-form-field";
 import SubmitButton from "./submit-button";
 import { patientFormValidation } from "@/lib/validations";
 import { useRouter } from "next/navigation";
-import { createUser, registerPatient } from "@/lib/actions/patient";
+import { registerPatient } from "@/lib/actions/patient";
 import { toast } from "sonner";
 import { FormFieldType } from "./patient-form";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
@@ -21,7 +21,6 @@ import {
 } from "@/constants";
 import { SelectItem } from "../ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Image from "next/image";
 import FileUploader from "./file-uploader";
 
 export default function RegisterForm({ user }: { user: User }) {
@@ -31,9 +30,9 @@ export default function RegisterForm({ user }: { user: User }) {
     resolver: zodResolver(patientFormValidation),
     defaultValues: {
       ...PatientFormDefaultValues,
-      name: "",
-      email: "",
-      phone: "",
+      name: user.name || "",
+      email: user.email || "",
+      phone: user.phone || "",
     },
   });
 

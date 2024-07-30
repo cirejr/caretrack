@@ -23,13 +23,13 @@ export async function createUser(user: CreateUserParams) {
       undefined,
       user.name,
     );
-    return parseStringify(newUser);
+    return { status: 200, data: parseStringify(newUser) };
   } catch (error: any) {
     if (error && error?.code === 409) {
       const documents = await users.list([Query.equal("email", [user.email])]);
-
-      return documents?.users[0];
+      return { status: 409, data: documents?.users[0] };
     }
+    return error?.message;
   }
 }
 

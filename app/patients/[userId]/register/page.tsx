@@ -1,13 +1,17 @@
+import React from "react";
+import Image from "next/image";
+
 import RegisterForm from "@/components/forms/register-form";
 import { getUser } from "@/lib/actions/patient";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+
+import * as Sentry from "@sentry/nextjs";
 
 export default async function Register({
   params: { userId },
 }: SearchParamProps) {
   const user = await getUser(userId);
+  Sentry.metrics.set("user_view_register", user?.name);
+
   return (
     <div className='flex h-screen max-h-screen'>
       <section className='remove-scrollbar container'>

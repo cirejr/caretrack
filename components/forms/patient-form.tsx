@@ -46,10 +46,14 @@ export default function PatientForm() {
         email,
         phone,
       };
-      const user = await createUser(userData);
-      if (user) router.push(`/patients/${user.$id}/register`);
+      const res = await createUser(userData);
+      console.log("res", res);
+      if (res.status === 200 || res.status === 409)
+        router.push(`/patients/${res.data.$id}/register`);
     } catch (error: any) {
-      toast.error(error?.message || "Something went wrong");
+      if (error?.data) router.push(`/patients/${error.data.$id}/register`);
+      console.log("error :", error);
+      toast.error(error || "Something went wrong");
     }
     setIsLoading(false);
   }

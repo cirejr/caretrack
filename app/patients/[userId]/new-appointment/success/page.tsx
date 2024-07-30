@@ -1,11 +1,15 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Doctors } from "@/constants";
-import { getAppointment } from "@/lib/actions/appointment";
-import { formatDateTime } from "@/lib/utils";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import * as Sentry from "@sentry/nextjs";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+
+import { Doctors } from "@/constants";
+import { getUser } from "@/lib/actions/patient";
+import { getAppointment } from "@/lib/actions/appointment";
+import { formatDateTime } from "@/lib/utils";
 
 export default async function Success({
   params: { userId },
@@ -16,6 +20,10 @@ export default async function Success({
   const doctor = Doctors.find(
     (doctor) => doctor.name === appointment?.primaryPhysician,
   );
+  const user = await getUser(userId);
+
+  Sentry.metrics.set("user_view_appointment-success", user?.name);
+
   return (
     <div className='flex h-screen max-h-screen px-[5%]'>
       <div className='success-img'>
